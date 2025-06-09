@@ -1,22 +1,49 @@
 import React from "react";
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-const AddJobPage = () => {
+const AddJobPage = ({ addJobSubmit }) => {
   const [title, setTitle] = useState("");
   const [type, setType] = useState("");
   const [location, setLocation] = useState("");
   const [description, setDescription] = useState("");
-  const [salary, setSalary] = useState("");
+  const [salary, setSalary] = useState("Under $50K");
   const [companyName, setCompanyName] = useState("");
   const [companyDescription, setCompanyDescription] = useState("");
   const [contactEmail, setContactEmail] = useState("");
   const [contactPhone, setContactPhone] = useState("");
 
+  const navigate = useNavigate();
+
+  const submitForm = (e) => {
+    e.preventDefault();
+
+    const newJob = {
+      title,
+      type,
+      location,
+      description,
+      salary,
+      company: {
+        name: companyName,
+        description: companyDescription,
+        contact: {
+          email: contactEmail,
+          phone: contactPhone,
+        },
+      },
+    };
+
+    addJobSubmit(newJob);
+
+    navigate("/jobs");
+  };
+
   return (
     <section className="bg-indigo-50">
       <div className="container m-auto max-w-2xl py-24">
         <div className="bg-white px-6 py-8 mb-4 shadow-md rounded-md border m-4 md:m-0">
-          <form>
+          <form onSubmit={submitForm}>
             <h2 className="text-3xl text-center font-semibold mb-6">Add Job</h2>
 
             <div className="mb-4">
@@ -86,6 +113,8 @@ const AddJobPage = () => {
                 name="salary"
                 className="border rounded w-full py-2 px-3"
                 required
+                value={salary}
+                onChange={(e) => setSalary(e.target.value)}
               >
                 <option value="Under $50K">Under $50K</option>
                 <option value="$50K - 60K">$50K - $60K</option>
